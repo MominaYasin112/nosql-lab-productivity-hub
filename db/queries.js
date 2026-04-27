@@ -418,7 +418,7 @@ async function projectTaskSummary(db, ownerId) {
       }
     }
   ]).toArray();
-
+  console.log('projectTaskSummary result:', result);
   return result;
 }
 
