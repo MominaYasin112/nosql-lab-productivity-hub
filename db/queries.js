@@ -88,10 +88,12 @@ async function loginFindUser(db, email) {
  * Hint: find with two filter conditions, then .sort().toArray().
  */
 async function listUserProjects(db, ownerId) {
-  // TODO: implement
-  throw new Error('listUserProjects not implemented');
+  const result = await db.collection('projects')
+    .find({ ownerId: ownerId, archived: false })
+    .sort({ createdAt: -1 })
+    .toArray();
+  return result;
 }
-
 /**
  * Query 4: createProject
  * -------------------------------------------------------------
@@ -406,33 +408,8 @@ async function projectTaskSummary(db, ownerId) {
  *       you only want to look up 10 projects, not all of them.
  */
 async function recentActivityFeed(db, ownerId) {
-  const result = await db.collection('tasks').aggregate([
-    { $match: { ownerId: ownerId } },
-    { $sort: { createdAt: -1 } },
-    { $limit: 10 },
-    {
-      $lookup: {
-        from: 'projects',
-        localField: 'projectId',
-        foreignField: '_id',
-        as: 'project'
-      }
-    },
-    { $unwind: '$project' },
-    {
-      $project: {
-        _id: 1,
-        title: 1,
-        status: 1,
-        priority: 1,
-        createdAt: 1,
-        projectId: 1,
-        projectName: '$project.name'
-      }
-    }
-  ]).toArray();
-
-  return result;
+  // TODO: implement
+  throw new Error('recentActivityFeed not implemented');
 }
 
 // =============================================================================
