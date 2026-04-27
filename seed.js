@@ -4,14 +4,12 @@ const { connect } = require('./db/connection');
 
 (async () => {
   const db = await connect();
-
-  // Clear existing data so re-seeding is idempotent
   await db.collection('users').deleteMany({});
   await db.collection('projects').deleteMany({});
   await db.collection('tasks').deleteMany({});
   await db.collection('notes').deleteMany({});
 
-  // ── Users ──────────────────────────────────────────────────────────────────
+  //Users
   const hash1 = await bcrypt.hash('password123', 10);
   const hash2 = await bcrypt.hash('securepass', 10);
 
@@ -32,7 +30,7 @@ const { connect } = require('./db/connection');
   const aliceId = u1.insertedId;
   const bobId   = u2.insertedId;
 
-  // ── Projects ───────────────────────────────────────────────────────────────
+  //Projects
   const p1 = await db.collection('projects').insertOne({
     ownerId: aliceId,
     name: 'Final Year Project',
@@ -70,7 +68,7 @@ const { connect } = require('./db/connection');
   const p3Id = p3.insertedId;
   const p4Id = p4.insertedId;
 
-  // ── Tasks ──────────────────────────────────────────────────────────────────
+  //Tasks
   await db.collection('tasks').insertMany([
     {
       ownerId: aliceId,
@@ -83,7 +81,7 @@ const { connect } = require('./db/connection');
         { title: 'Outline sections', done: true },
         { title: 'Draft introduction', done: true }
       ],
-      dueDate: new Date('2024-02-01'),   // schema flexibility: optional field
+      dueDate: new Date('2024-02-01'),
       createdAt: new Date('2024-01-16')
     },
     {
@@ -141,7 +139,7 @@ const { connect } = require('./db/connection');
     }
   ]);
 
-  // ── Notes ──────────────────────────────────────────────────────────────────
+  // Notes
   await db.collection('notes').insertMany([
     {
       ownerId: aliceId,
@@ -149,7 +147,7 @@ const { connect } = require('./db/connection');
       title: 'FYP Meeting Notes',
       body: 'Discussed model accuracy targets with supervisor. Aim for 90%+.',
       tags: ['meeting', 'fyp'],
-      pinned: true,              // schema flexibility: optional field
+      pinned: true,
       createdAt: new Date('2024-01-20')
     },
     {
@@ -165,7 +163,7 @@ const { connect } = require('./db/connection');
       title: 'Books to Read',
       body: 'Clean Code, Designing Data-Intensive Applications, SICP.',
       tags: ['personal', 'reading'],
-      createdAt: new Date('2024-03-01')  // standalone note — no projectId
+      createdAt: new Date('2024-03-01')
     },
     {
       ownerId: bobId,
@@ -181,10 +179,10 @@ const { connect } = require('./db/connection');
       title: 'Grocery List',
       body: 'Milk, eggs, bread, coffee.',
       tags: ['personal'],
-      createdAt: new Date('2024-03-20')  // standalone note — no projectId
+      createdAt: new Date('2024-03-20')
     }
   ]);
 
-  console.log('✅ Database seeded successfully!');
+  console.log('Database seeded successfully!');
   process.exit(0);
 })();
