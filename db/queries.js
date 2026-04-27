@@ -342,8 +342,15 @@ async function deleteTask(db, taskId) {
  *       Build the filter conditionally based on whether projectId was passed.
  */
 async function searchNotes(db, ownerId, tags, projectId) {
-  // TODO: implement
-  throw new Error('searchNotes not implemented');
+  const filter = { ownerId: ownerId, tags: { $in: tags } };
+  if (projectId) {
+    filter.projectId = projectId;
+  }
+  const result = await db.collection('notes')
+    .find(filter)
+    .sort({ createdAt: -1 })
+    .toArray();
+  return result;
 }
 
 /**
